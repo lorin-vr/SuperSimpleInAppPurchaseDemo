@@ -10,7 +10,7 @@ This app aims to demonstrate a minimal setup for an in-app purchase, using the m
 
 I've assumed the following requirements:
 - A single, non-consumable in-app purchase. Typically this would be used for unlocking a premium feature.
-- Must cater for [Strong Customer Authentication (SCA)] (https://developer.apple.com/support/sca/) or [Ask to Buy](https://support.apple.com/en-us/105055).
+- Must cater for [Strong Customer Authentication (SCA)](https://developer.apple.com/support/sca/) or [Ask to Buy](https://support.apple.com/en-us/105055).
 - Must work online and offline.
 - Must handle purchases that took place on another device.
 
