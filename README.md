@@ -36,6 +36,8 @@ The app uses a StoreKit configuration file for local testing.
 
 Now the app is ready to run on simulator or device.
 
+![Animation showing an in-app purchase of a premium feature](demo/purchase-premium-demo.gif)
+
 ## References
 
 https://developer.apple.com/documentation/swiftui/backyard-birds-sample
@@ -43,6 +45,3 @@ https://developer.apple.com/documentation/storekit/in-app_purchase/implementing_
 https://github.com/RevenueCat/storekit2-demo-app
 https://swiftwithmajid.com/2023/08/01/mastering-storekit2/
 https://www.hackingwithswift.com/quick-start/swiftui/how-to-add-in-app-purchases-in-swiftui
-
-
-
