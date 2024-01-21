@@ -46,6 +46,7 @@ struct MainView: View {
         }
     }
 
+    @MainActor
     private var shouldShowPremiumFeature: Bool {
         store.premiumAccessUnlocked
     }

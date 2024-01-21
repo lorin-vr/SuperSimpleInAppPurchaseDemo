@@ -16,13 +16,12 @@ import StoreKit
     static let fullAccessProductId = "SuperSimpleInAppPurchaseDemo.nonconsumable.premiumfeature"
 
     // This simple app has only one product: premium access
+    @MainActor
     private(set) var premiumAccessUnlocked: Bool = false
 
     private var updateListenerTask: Task<Void, Error>? = nil
 
     init() {
-        premiumAccessUnlocked = false
-
         updateListenerTask = listenForTransactions()
 
         Task {
