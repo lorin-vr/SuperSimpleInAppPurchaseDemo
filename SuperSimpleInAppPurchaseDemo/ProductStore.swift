@@ -74,8 +74,8 @@ import StoreKit
 
     /// Listen for transactions that may have
     ///  1) happened on a another device
-    ///  2) Completed SCA
-    ///  3) Completed Ask to Buy
+    ///  2) completed SCA
+    ///  3) completed Ask to Buy
     ///
     ///  Theoretically, new updates could appear at any time, but Apple has indicated that updates are most likely to appear once, shortly after app startup. So this method should be called early.
     ///
