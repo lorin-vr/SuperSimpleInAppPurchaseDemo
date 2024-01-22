@@ -22,6 +22,8 @@ final class ProductStoreTests: XCTestCase {
         session.resetToDefaultState()
     }
 
+    // MARK: - New purchases
+
     func testSuccessfulVerifiedPurchase() async throws {
         XCTAssertFalse(store.premiumAccessUnlocked)
 
@@ -46,5 +48,38 @@ final class ProductStoreTests: XCTestCase {
         await store.didCompletePurchase(product, purchaseResult: .success(.unverified(transaction, .invalidSignature)))
 
         XCTAssertFalse(store.premiumAccessUnlocked)
+    }
+
+    // MARK: - Previous purchases
+
+    func testCurrentEntitlementsContainsPreviousPurchase() async throws {
+        let oneMonthAgo = TimeInterval(-24 * 60 * 60 * 30)
+
+        // Set store to nil so that it is not listening for transactions
+        store = nil
+
+        // Purchase a product one month in the past
+        try await session.buyProduct(identifier: ProductStore.fullAccessProductId, options: [.purchaseDate(.now.addingTimeInterval(oneMonthAgo))])
+
+        // Confirm that the purchase was successful
+        XCTAssertEqual(session.allTransactions().count, 1)
+        XCTAssertTrue(session.allTransactions()[0].state == .purchased)
+
+        // Initialise a new store. The initialiser should look for any current entitlements (previous successful purchases) to update the product status.
+        store = ProductStore()
+
+        // Set up an expectation that the feature will be unlocked. This would mean that the store found a current entitlement for the product.
+        let featureIsUnlockedExpectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ -> Bool in
+                self.store.premiumAccessUnlocked == true
+            }),
+            object: store)
+
+        // Wait for the store to read the entitlement and unlock the feature
+        await fulfillment(of: [featureIsUnlockedExpectation], timeout: 5.0)
+
+        // Extra check that the feature is indeed unlocked
+        // (Shouldn't be necessary, since the expectation is checking the same thing)
+        XCTAssertTrue(store.premiumAccessUnlocked)
     }
 }
