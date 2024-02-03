@@ -50,6 +50,61 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertFalse(store.premiumAccessUnlocked)
     }
 
+    func testCancelledPurchase() async throws {
+        XCTAssertFalse(store.premiumAccessUnlocked)
+
+        guard let product = try await Product.products(for: [ProductStore.fullAccessProductId]).first else {
+            return XCTFail("Cannot find premium access product")
+        }
+
+        await store.didCompletePurchase(product, purchaseResult: .userCancelled)
+
+        XCTAssertFalse(store.premiumAccessUnlocked)
+    }
+
+// `SKTestSession.askToBuyEnabled = true` is not working on Xcode 15.2
+// Filed feedback FB13554125
+// See also https://developer.apple.com/forums/thread/740359
+//
+    func testAskToBuyPurchase() async throws {
+        // Setting askToBuyEnabled seems to have no effect
+        session.askToBuyEnabled = true
+
+        // Check there are no current transactions, and the feature has not yet been unlocked
+        XCTAssertEqual(session.allTransactions().count, 0)
+        XCTAssertFalse(store.premiumAccessUnlocked)
+
+        guard let product = try await Product.products(for: [ProductStore.fullAccessProductId]).first else {
+            return XCTFail("Cannot find premium access product")
+        }
+
+        // Try to purchase the product
+        let transaction = try await session.buyProduct(identifier: ProductStore.fullAccessProductId)
+
+        // Complete the purchase on the store, with result 'pending'
+        await store.didCompletePurchase(product, purchaseResult: .pending)
+
+        // Check that the the feature is still locked, because ask to buy confirmation is pending
+        XCTAssertFalse(store.premiumAccessUnlocked)
+
+        // Check that there is now a StoreKit transaction
+        XCTAssertEqual(session.allTransactions().count, 1)
+
+        XCTExpectFailure("There may be a StoreKitTest bug with askToBuy, so the rest of this test does not work as expected.")
+
+        // The transaction state should be `deferred`, but instead it is `purchased`
+        XCTAssertEqual(session.allTransactions()[0].state, .deferred)
+
+        // The transaction should be pending ask to buy confirmation, but this call fails
+        XCTAssertTrue(session.allTransactions()[0].pendingAskToBuyConfirmation)
+
+        // Approve the ask to buy transaction
+        try session.approveAskToBuyTransaction(identifier: UInt(transaction.id))
+
+        // The feature should now be unlocked
+        XCTAssertTrue(store.premiumAccessUnlocked)
+    }
+
     // MARK: - Previous purchases
 
     func testCurrentEntitlementsContainsPreviousPurchase() async throws {
