@@ -3,6 +3,7 @@
 //  SuperSimpleInAppPurchaseDemo
 //
 
+import OSLog
 import StoreKit
 import SwiftUI
 
@@ -10,6 +11,8 @@ import SwiftUI
 struct PurchaseView: View {
 
     @Environment(ProductStore.self) var store: ProductStore
+
+    private let logger = Logger(subsystem: "lorin.vanriel.SuperSimpleInAppPurchaseDemo", category: "PurchaseView")
 
     var body: some View {
         VStack(spacing: 40) {
@@ -20,7 +23,7 @@ struct PurchaseView: View {
                     if case .success(let purchaseResult) = result {
                         await store.didCompletePurchase(product, purchaseResult: purchaseResult)
                     } else {
-                        print("There was a problem completing the purchase.")
+                        logger.warning("There was a problem completing the purchase.")
                     }
                 }
 

@@ -3,6 +3,7 @@
 //  SuperSimpleInAppPurchaseDemo
 //
 
+import OSLog
 import StoreKit
 
 /// Class to manage unlocking features in response to in-app purchases
@@ -20,6 +21,8 @@ import StoreKit
     private(set) var premiumAccessUnlocked: Bool = false
 
     private var updateListenerTask: Task<Void, Error>? = nil
+
+    private let logger = Logger(subsystem: "lorin.vanriel.SuperSimpleInAppPurchaseDemo", category: "ProductStore")
 
     init() {
         updateListenerTask = listenForTransactions()
@@ -65,8 +68,8 @@ import StoreKit
                 break
             }
         } catch {
-            // Could perhaps show an error in this case, but it's not clear what action a user should take.
-            print("StoreKit transaction could not be verified.")
+            // Could perhaps show an error alert in this case, but it's not clear what action a user should take.
+            logger.error("StoreKit transaction could not be verified.")
         }
     }
 
@@ -102,7 +105,7 @@ import StoreKit
                     }
                 } catch {
                     // Nothing we can really do about unverified transactions.
-                    print("StoreKit transaction could not be verified.")
+                    logger.error("StoreKit transaction could not be verified.")
                 }
             }
         }
@@ -128,7 +131,7 @@ import StoreKit
                 }
             } catch {
                 // Nothing we can really do about unverified transactions.
-                print("StoreKit transaction could not be verified.")
+                logger.error("StoreKit transaction could not be verified.")
             }
         }
     }
