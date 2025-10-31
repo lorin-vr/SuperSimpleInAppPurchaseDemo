@@ -10,7 +10,7 @@ import SwiftUI
 /// A view for purchasing premium access to the app.
 struct PurchaseView: View {
 
-    @Environment(ProductStore.self) var store: ProductStore
+    @Environment(ProductStore.self) private var store: ProductStore
 
     private let logger = Logger(subsystem: "lorin.vanriel.SuperSimpleInAppPurchaseDemo", category: "PurchaseView")
 
