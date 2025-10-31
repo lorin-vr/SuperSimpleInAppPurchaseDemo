@@ -33,6 +33,7 @@ import StoreKit
         }
     }
 
+    @MainActor
     deinit {
         // Transaction listener is active for the lifetime of this store
         updateListenerTask?.cancel()

@@ -13,7 +13,8 @@ final class ProductStoreTests: XCTestCase {
     private var store: ProductStore!
     private var session: SKTestSession!
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
+        try await super.setUp()
         store = ProductStore()
 
         session = try SKTestSession(configurationFileNamed: "SuperSimpleInAppPurchaseConfig")
