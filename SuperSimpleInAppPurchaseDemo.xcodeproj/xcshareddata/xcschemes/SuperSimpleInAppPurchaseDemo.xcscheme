@@ -40,17 +40,6 @@
                ReferencedContainer = "container:SuperSimpleInAppPurchaseDemo.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9DA739C52B53D8110018C81F"
-               BuildableName = "SuperSimpleInAppPurchaseDemoUITests.xctest"
-               BlueprintName = "SuperSimpleInAppPurchaseDemoUITests"
-               ReferencedContainer = "container:SuperSimpleInAppPurchaseDemo.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
