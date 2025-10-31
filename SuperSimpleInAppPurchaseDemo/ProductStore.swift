@@ -7,6 +7,7 @@ import OSLog
 import StoreKit
 
 /// Class to manage unlocking features in response to in-app purchases
+/// MainActor isolation by default is enabled in this app, so anything not marked `nonisolated` should be assumed to be MainActor-isolated.
 @Observable final class ProductStore {
 
     enum StoreKitError: Error {
@@ -22,7 +23,7 @@ import StoreKit
 
     private var updateListenerTask: Task<Void, Error>? = nil
 
-    private let logger = Logger(subsystem: "lorin.vanriel.SuperSimpleInAppPurchaseDemo", category: "ProductStore")
+    nonisolated private let logger = Logger(subsystem: "lorin.vanriel.SuperSimpleInAppPurchaseDemo", category: "ProductStore")
 
     init() {
         updateListenerTask = listenForTransactions()
@@ -45,7 +46,7 @@ import StoreKit
     /// - Parameters:
     ///   - product: The product being purchased
     ///   - purchaseResult: Indicates the status of the purchase, e.g. successful, pending, or cancelled
-    func didCompletePurchase(_ product: Product, purchaseResult: Product.PurchaseResult) async {
+    nonisolated func didCompletePurchase(_ product: Product, purchaseResult: Product.PurchaseResult) async {
         do {
             switch purchaseResult {
             case let .success(.verified(transaction)):
@@ -87,7 +88,7 @@ import StoreKit
     ///  https://developer.apple.com/documentation/storekit/transaction/3851206-updates
     ///
     /// - Returns: A task that can be cancelled when we no longer want to listen for transactions
-    private func listenForTransactions() -> Task<Void, Error> {
+    nonisolated private func listenForTransactions() -> Task<Void, Error> {
         Task(priority: .background) {
             // Loop through the `Transaction.updates` stream.
             for await result in Transaction.updates {
@@ -115,7 +116,6 @@ import StoreKit
     /// Check the user's transaction history using `Transaction.currentEntitlements`.
     /// For any verified purchases, unlock the corresponding product. For any unverified purchases, do nothing.
     /// Because `Transaction.currentEntitlements` uses local caching if the network is unavailable, this method works both online and offline.
-    @MainActor
     private func unlockPreviouslyPurchasedFeatures() async {
         // Loop through the user's transaction history, looking for verified, purchased products
         for await result in Transaction.currentEntitlements {
@@ -144,7 +144,6 @@ import StoreKit
     ///
     /// - Parameters:
     ///   - transaction: A transaction for the product intended to be unlocked
-    @MainActor
     private func unlockFeature(for transaction: Transaction) async {
         if transaction.productType == .nonConsumable && transaction.productID == Self.fullAccessProductId {
             premiumAccessUnlocked = true

@@ -8,7 +8,7 @@ import SwiftUI
 /// The main view of the app. Shows either basic features or premium features, depending on whether premium access has been unlocked.
 struct MainView: View {
 
-    @Environment(ProductStore.self) var store: ProductStore
+    @Environment(ProductStore.self) private var store: ProductStore
 
     var body: some View {
         NavigationStack {
@@ -46,7 +46,6 @@ struct MainView: View {
         }
     }
 
-    @MainActor
     private var shouldShowPremiumFeature: Bool {
         store.premiumAccessUnlocked
     }

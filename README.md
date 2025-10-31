@@ -13,6 +13,7 @@ I've assumed the following requirements:
 - Must cater for [Strong Customer Authentication (SCA)](https://developer.apple.com/support/sca/) or [Ask to Buy](https://support.apple.com/en-us/105055).
 - Must work online and offline.
 - Must handle purchases that took place on another device.
+- Must compile under Swift 6 language mode with default MainActor-isolation enabled.
 
 ## Why did I make this?
 
